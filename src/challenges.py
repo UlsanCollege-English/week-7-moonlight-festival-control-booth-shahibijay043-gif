@@ -1,50 +1,73 @@
-"""
-Week 7: Moonlight Festival Control Booth
-
-Use Python's heapq module to solve priority queue problems.
-"""
-
 from __future__ import annotations
-
 import heapq
 
 
-def order_festival_alerts(alerts: list[tuple[int, str]]) -> list[str]:
-    """
-    Return alert titles in the order they should be handled.
+def order_festival_alerts(alerts):
+    heap = []
 
-    Each alert is a tuple:
-        (priority, title)
+    # put everything into heap
+    for alert in alerts:
+        priority = alert[0]
+        title = alert[1]
+        heapq.heappush(heap, (priority, title))
 
-    Smaller priority numbers should be handled first.
-    """
-    raise NotImplementedError
+    result = []
 
+    # take out one by one
+    while len(heap) > 0:
+        item = heapq.heappop(heap)
+        result.append(item[1])
 
-def order_festival_alerts_stable(alerts: list[tuple[int, str]]) -> list[str]:
-    """
-    Return alert titles in the order they should be handled.
-
-    If two alerts have the same priority, keep the original input order.
-    """
-    raise NotImplementedError
+    return result
 
 
-def top_k_festival_alerts(alerts: list[tuple[int, str]], k: int) -> list[str]:
-    """
-    Return the titles of the k most urgent alerts.
+def order_festival_alerts_stable(alerts):
+    heap = []
+    index = 0
 
-    If k <= 0, return an empty list.
-    If k is larger than the number of alerts, return as many as possible.
-    """
-    raise NotImplementedError
+    # adding index so order stays same if priority same
+    for alert in alerts:
+        priority = alert[0]
+        title = alert[1]
+        heapq.heappush(heap, (priority, index, title))
+        index += 1
+
+    result = []
+
+    while len(heap) > 0:
+        item = heapq.heappop(heap)
+        result.append(item[2])
+
+    return result
 
 
-def peek_next_festival_alert(alerts: list[tuple[int, str]]) -> str | None:
-    """
-    Return the title of the next alert to handle without permanently
-    changing the original input.
+def top_k_festival_alerts(alerts, k):
+    if k <= 0:
+        return []
 
-    If alerts is empty, return None.
-    """
-    raise NotImplementedError
+    heap = []
+
+    for alert in alerts:
+        heapq.heappush(heap, alert)
+
+    result = []
+    count = 0
+
+    while len(heap) > 0 and count < k:
+        item = heapq.heappop(heap)
+        result.append(item[1])
+        count += 1
+
+    return result
+
+
+def peek_next_festival_alert(alerts):
+    if len(alerts) == 0:
+        return None
+
+    # copy list so original not touched
+    temp = list(alerts)
+    heapq.heapify(temp)
+
+    item = heapq.heappop(temp)
+    return item[1]
