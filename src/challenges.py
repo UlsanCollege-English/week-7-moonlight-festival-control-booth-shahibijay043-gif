@@ -1,37 +1,53 @@
+from __future__ import annotations
 import heapq
 
 
 def order_festival_alerts(alerts):
-    # create empty heap
     heap = []
-
-    # push all alerts into heap
-    for alert in alerts:
-        priority, title = alert
+    for priority, title in alerts:
         heapq.heappush(heap, (priority, title))
 
     result = []
-
-    # pop from heap (smallest priority first)
     while heap:
-        priority, title = heapq.heappop(heap)
+        _, title = heapq.heappop(heap)
         result.append(title)
 
     return result
 
 
-def total_attendees(attendees):
-    total = 0
+def order_festival_alerts_stable(alerts):
+    heap = []
 
-    for num in attendees:
-        total += num
+    for i, (priority, title) in enumerate(alerts):
+        heapq.heappush(heap, (priority, i, title))
 
-    return total
+    result = []
+    while heap:
+        _, _, title = heapq.heappop(heap)
+        result.append(title)
+
+    return result
 
 
-def average_attendees(attendees):
-    if len(attendees) == 0:
-        return 0
+def top_k_festival_alerts(alerts, k):
+    if k <= 0 or not alerts:
+        return []
 
-    total = total_attendees(attendees)
-    return total / len(attendees)
+    heap = []
+
+    for i, (priority, title) in enumerate(alerts):
+        heapq.heappush(heap, (priority, i, title))
+
+    result = []
+    while heap and len(result) < k:
+        _, _, title = heapq.heappop(heap)
+        result.append(title)
+
+    return result
+
+
+def peek_next_festival_alert(alerts):
+    if not alerts:
+        return None
+
+    return min(alerts, key=lambda x: x[0])[1]
