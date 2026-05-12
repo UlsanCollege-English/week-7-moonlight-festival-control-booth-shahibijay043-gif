@@ -1,13 +1,19 @@
 from __future__ import annotations
+
 import heapq
 
 
-def order_festival_alerts(alerts):
-    heap = []
+def order_festival_alerts(
+    alerts: list[tuple[int, str]],
+) -> list[str]:
+
+    heap: list[tuple[int, str]] = []
+
     for priority, title in alerts:
         heapq.heappush(heap, (priority, title))
 
-    result = []
+    result: list[str] = []
+
     while heap:
         _, title = heapq.heappop(heap)
         result.append(title)
@@ -15,13 +21,17 @@ def order_festival_alerts(alerts):
     return result
 
 
-def order_festival_alerts_stable(alerts):
-    heap = []
+def order_festival_alerts_stable(
+    alerts: list[tuple[int, str]],
+) -> list[str]:
 
-    for i, (priority, title) in enumerate(alerts):
-        heapq.heappush(heap, (priority, i, title))
+    heap: list[tuple[int, int, str]] = []
 
-    result = []
+    for index, (priority, title) in enumerate(alerts):
+        heapq.heappush(heap, (priority, index, title))
+
+    result: list[str] = []
+
     while heap:
         _, _, title = heapq.heappop(heap)
         result.append(title)
@@ -29,16 +39,21 @@ def order_festival_alerts_stable(alerts):
     return result
 
 
-def top_k_festival_alerts(alerts, k):
+def top_k_festival_alerts(
+    alerts: list[tuple[int, str]],
+    k: int,
+) -> list[str]:
+
     if k <= 0 or not alerts:
         return []
 
-    heap = []
+    heap: list[tuple[int, int, str]] = []
 
-    for i, (priority, title) in enumerate(alerts):
-        heapq.heappush(heap, (priority, i, title))
+    for index, (priority, title) in enumerate(alerts):
+        heapq.heappush(heap, (priority, index, title))
 
-    result = []
+    result: list[str] = []
+
     while heap and len(result) < k:
         _, _, title = heapq.heappop(heap)
         result.append(title)
@@ -46,8 +61,13 @@ def top_k_festival_alerts(alerts, k):
     return result
 
 
-def peek_next_festival_alert(alerts):
+def peek_next_festival_alert(
+    alerts: list[tuple[int, str]],
+) -> str | None:
+
     if not alerts:
         return None
 
-    return min(alerts, key=lambda x: x[0])[1]
+    priority, title = min(alerts)
+
+    return title
