@@ -1,3 +1,5 @@
+"""Weekly Coding — Festival Alert Priority Center."""
+
 from __future__ import annotations
 
 import heapq
@@ -7,36 +9,39 @@ def order_festival_alerts(
     alerts: list[tuple[int, str]],
 ) -> list[str]:
 
-    heap: list[tuple[int, str]] = []
+    priority_heap: list[tuple[int, str]] = []
 
     for priority, title in alerts:
-        heapq.heappush(heap, (priority, title))
+        heapq.heappush(priority_heap, (priority, title))
 
-    result: list[str] = []
+    ordered_alerts: list[str] = []
 
-    while heap:
-        _, title = heapq.heappop(heap)
-        result.append(title)
+    while priority_heap:
+        _, title = heapq.heappop(priority_heap)
+        ordered_alerts.append(title)
 
-    return result
+    return ordered_alerts
 
 
 def order_festival_alerts_stable(
     alerts: list[tuple[int, str]],
 ) -> list[str]:
 
-    heap: list[tuple[int, int, str]] = []
+    priority_heap: list[tuple[int, int, str]] = []
 
-    for index, (priority, title) in enumerate(alerts):
-        heapq.heappush(heap, (priority, index, title))
+    for insertion_order, (priority, title) in enumerate(alerts):
+        heapq.heappush(
+            priority_heap,
+            (priority, insertion_order, title),
+        )
 
-    result: list[str] = []
+    ordered_alerts: list[str] = []
 
-    while heap:
-        _, _, title = heapq.heappop(heap)
-        result.append(title)
+    while priority_heap:
+        _, _, title = heapq.heappop(priority_heap)
+        ordered_alerts.append(title)
 
-    return result
+    return ordered_alerts
 
 
 def top_k_festival_alerts(
@@ -47,18 +52,21 @@ def top_k_festival_alerts(
     if k <= 0 or not alerts:
         return []
 
-    heap: list[tuple[int, int, str]] = []
+    priority_heap: list[tuple[int, int, str]] = []
 
-    for index, (priority, title) in enumerate(alerts):
-        heapq.heappush(heap, (priority, index, title))
+    for insertion_order, (priority, title) in enumerate(alerts):
+        heapq.heappush(
+            priority_heap,
+            (priority, insertion_order, title),
+        )
 
-    result: list[str] = []
+    top_alerts: list[str] = []
 
-    while heap and len(result) < k:
-        _, _, title = heapq.heappop(heap)
-        result.append(title)
+    while priority_heap and len(top_alerts) < k:
+        _, _, title = heapq.heappop(priority_heap)
+        top_alerts.append(title)
 
-    return result
+    return top_alerts
 
 
 def peek_next_festival_alert(
@@ -68,6 +76,6 @@ def peek_next_festival_alert(
     if not alerts:
         return None
 
-    priority, title = min(alerts)
+    _, title = min(alerts)
 
     return title
